@@ -27,7 +27,7 @@ const getNFT = async (metaData: NFTInfo) => {
     }
   }
   const res: any = await sendMessage(req)
-  console.log('InvokeERC721Contract: ', res)
+  // console.log('InvokeERC721Contract: ', res)
   let source = res.result
   return {
     chainId: Number(metaData.chainId),
