@@ -1,6 +1,6 @@
 import { registerAssetService, NFTInfo } from './index'
 import { MessageTypes, sendMessage } from '@soda/soda-core'
-const retrieveCollections = () => {}
+const retrieveCollections = async (owner_address: string) => {}
 
 const retrieveAssets = () => {}
 
@@ -27,8 +27,22 @@ const getNFT = async (metaData: NFTInfo) => {
     }
   }
   const res: any = await sendMessage(req)
-  // console.log('InvokeERC721Contract: ', res)
+  console.log('InvokeERC721Contract: ', res)
   let source = res.result
+  if (res && res.code < 0) {
+    // invoke failed
+    source = ''
+  }
+
+  //TODO: source adapter
+  if (source && source.includes && source.includes('{')) {
+    try {
+      const obj = JSON.parse(source)
+      source = obj.image || obj.image_url
+    } catch (e) {}
+  } else if (source && source.startsWith && !source.startsWith('http')) {
+    source = `https://${source}.ipfs.dweb.link/`
+  }
   return {
     chainId: Number(metaData.chainId),
     contract: metaData.contract,

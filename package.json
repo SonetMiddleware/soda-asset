@@ -19,7 +19,6 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.17.9",
-    "@soda/soda-asset": "workspace:^0.0.1",
     "@soda/soda-core": "workspace:^0.0.1",
     "axios": "^0.21.1"
   },
