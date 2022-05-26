@@ -1,5 +1,5 @@
 import { registerAssetService, NFTInfo } from './index'
-import { MessageTypes, sendMessage } from '@soda/soda-core'
+import { getChainId, MessageTypes, sendMessage } from '@soda/soda-core'
 const retrieveCollections = async (owner_address: string) => {}
 
 const retrieveAssets = () => {}
@@ -13,6 +13,15 @@ const getNFT = async (metaData: NFTInfo) => {
       ...metaData,
       chainId: Number(DEFAULT_CHAINID),
       contract: DEFAULT_CONTRACT,
+      type: 'image',
+      storage: 'ipfs'
+    }
+  }
+  const currentChainId = await getChainId()
+  if (Number(currentChainId) !== Number(metaData.chainId)) {
+    return {
+      ...metaData,
+      source: '',
       type: 'image',
       storage: 'ipfs'
     }
