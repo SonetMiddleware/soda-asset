@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["jest", "chrome"],
+    "types": ["jest", "chrome", "node"],
     "skipLibCheck": true,
     "declaration": true,
     "target": "ES2020",
@@ -24,5 +24,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "exclude": ["bin", "build", "node_modules", "./dist"],
-  "include": ["src/**/*", "../soda-opensea/src/opensea.ts"]
+  "include": ["src/**/*"]
 }

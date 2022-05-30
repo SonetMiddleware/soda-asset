@@ -19,11 +19,12 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.17.9",
-    "@soda/soda-core": "workspace:^0.0.1",
-    "axios": "^0.21.1"
+    "@soda/soda-asset": "workspace:^0.0.1",
+    "@soda/soda-util": "workspace:^0.0.1",
+    "web3-utils": "^1.7.3"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.17.12",
+    "@types/node": "^17.0.35",
     "eslint": "^7.7.0",
     "father-build": "^1.21.2",
     "husky": "^4.3.8",
