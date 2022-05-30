@@ -1,7 +1,8 @@
 import {
   sendMessage,
   registerMessage,
-  isMetamaskConnected
+  isMetamaskConnected,
+  getChainId
 } from '@soda/soda-util'
 import * as Platwin from './service/platwin'
 import {
@@ -22,8 +23,9 @@ const actions = {
     Function.getRole
   ]
 }
-const getActions = (chainId: number): string[] => {
-  return actions[chainId] ? actions[chainId] : []
+
+const getCapability = () => {
+  return actions
 }
 
 const MessageTypes = {
@@ -131,14 +133,15 @@ async function ERC721MessageHandler(request: any) {
 
 const mint = async (cache: TokenCache, paymentMeta?: any): Promise<NFT> => {
   const { chainId, contract, source } = cache
-  if (!actions[chainId] || !actions[chainId].includes(Function.mint))
-    throw new Error('Invalid action mint for chainId: ' + chainId)
-
+  const cid = chainId ? chainId : await getChainId()
+  if (!actions[cid] || !actions[cid].includes(Function.mint))
+    throw new Error('Invalid action mint for chainId: ' + cid)
+  const c = contract ? contract : DEFAULT_CONTRACT
   const res: any = await sendMessage({
     type: MessageTypes.Mint_Token,
     request: {
-      chainId,
-      contract,
+      chainId: cid,
+      contract: c,
       hash: source
     }
   })
@@ -250,7 +253,7 @@ const init = () => {
   registerAssetService({
     name: serviceName,
     meta: {
-      getActions,
+      getCapability,
       getAssetInfo,
       getBalance,
       mint,

@@ -6,6 +6,7 @@ import ERC20abi from './config/abis/ERC20.json'
 import ERC721abi from './config/abis/ERC721.json'
 import { AbiItem } from 'web3-utils'
 import { getOrderByTokenId } from './apis'
+import { serviceRequestAccounts } from '@soda/soda-util'
 
 export const invokeERC721 = async (
   contract: string,
@@ -42,7 +43,8 @@ export const mintToken = async (
   hash: string
 ): Promise<{ tokenId: string; account: string }> => {
   const web3 = createWeb3()
-  const account = await getUserAccount()
+  const { accounts } = await serviceRequestAccounts()
+  const account = accounts[0]
   const CHAIN_ID = await web3.eth.getChainId()
   const cashContract = new web3.eth.Contract(
     ERC20abi.abi as AbiItem[],

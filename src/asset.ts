@@ -67,14 +67,35 @@ export type ServiceType = {
 export const registerAssetService = (svc: ServiceType) => {
   _assetServices[svc.name] = svc.meta
 }
-export const getAssetServiceActions = (
+
+export const getAssetServiceCapability = (
   service: string,
-  chainId: number
-): string[] => {
+  meta: {
+    action?: string
+    chainId?: number
+  }
+) => {
   if (!_assetServices[service]) {
     throw new Error('Service not found.')
   }
-  return _assetServices[service].getActions()
+  if (!_assetServices[service].getCapability) {
+    throw new Error('Function "getCapability" not found.')
+  }
+  const { action, chainId } = meta
+  try {
+    const caps = _assetServices[service].getCapability()
+    if (chainId && caps[chainId])
+      return action ? caps[chainId].includes(action) : caps[chainId]
+    const res = []
+    for (const cid of Object.keys(caps)) {
+      for (const fName of caps[cid]) {
+        if (!res.includes(fName)) res.push(fName)
+      }
+    }
+    return res
+  } catch (e) {
+    throw e
+  }
 }
 
 export const invoke = async (
