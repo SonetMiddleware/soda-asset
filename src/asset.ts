@@ -92,7 +92,7 @@ export const getAssetServiceCapability = (
         if (!res.includes(fName)) res.push(fName)
       }
     }
-    return res
+    return action ? res.includes(action) : res
   } catch (e) {
     throw e
   }
