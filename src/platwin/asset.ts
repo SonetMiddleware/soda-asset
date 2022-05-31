@@ -5,28 +5,7 @@ import {
   getChainId
 } from '@soda/soda-util'
 import * as Platwin from './service/platwin'
-import {
-  registerAssetService,
-  TokenCache,
-  AssetType,
-  NFT,
-  Function
-} from './asset'
-
-const actions = {
-  1: [Function.getAssetInfo, Function.getBalance, Function.getRole],
-  4: [Function.getAssetInfo, Function.getBalance, Function.getRole],
-  80001: [
-    Function.getAssetInfo,
-    Function.getBalance,
-    Function.mint,
-    Function.getRole
-  ]
-}
-
-const getCapability = () => {
-  return actions
-}
+import { TokenCache, AssetType, NFT, Function } from '../asset'
 
 const MessageTypes = {
   InvokeERC721Contract: 'InvokeERC721Contract',
@@ -38,15 +17,15 @@ const MessageTypes = {
 const DEFAULT_CHAINID = 80001
 const DEFAULT_CONTRACT = '0x0daB724e3deC31e5EB0a000Aa8FfC42F1EC917C5'
 
-const getAssetInfo = async (
+export const getAssetInfo = async (
   meta: TokenCache,
   paymentMeta?: any
 ): Promise<NFT> => {
   const { chainId: cid, contract: c, tokenId, source: src } = meta
   // hard code
   const chainId = cid ? Number(cid) : Number(DEFAULT_CHAINID)
-  if (!actions[chainId] || !actions[chainId].includes(Function.getAssetInfo))
-    throw new Error('Invalid action getAssetInfo from chainId: ' + chainId)
+  // if (!actions[chainId] || !actions[chainId].includes(Function.getAssetInfo))
+  //   throw new Error('Invalid action getAssetInfo from chainId: ' + chainId)
   const contract = c ? c : DEFAULT_CONTRACT
   if (src) {
     //v1
@@ -84,11 +63,14 @@ const getAssetInfo = async (
   }
 }
 
-const getBalance = async (meta: { cache: TokenCache; address: string }) => {
+export const getBalance = async (meta: {
+  cache: TokenCache
+  address: string
+}): Promise<number> => {
   const { cache, address } = meta
   const chainId = cache.chainId
-  if (!actions[chainId] || !actions[chainId].includes(Function.getBalance))
-    throw new Error('Invalid action getBalance for chainId: ' + chainId)
+  // if (!actions[chainId] || !actions[chainId].includes(Function.getBalance))
+  //   throw new Error('Invalid action getBalance for chainId: ' + chainId)
   const res: any = await invokeERC721({
     contract: cache.contract,
     method: 'balanceOf',
@@ -131,11 +113,14 @@ async function ERC721MessageHandler(request: any) {
   return response
 }
 
-const mint = async (cache: TokenCache, paymentMeta?: any): Promise<NFT> => {
+export const mint = async (
+  cache: TokenCache,
+  paymentMeta?: any
+): Promise<NFT> => {
   const { chainId, contract, source } = cache
   const cid = chainId ? chainId : await getChainId()
-  if (!actions[cid] || !actions[cid].includes(Function.mint))
-    throw new Error('Invalid action mint for chainId: ' + cid)
+  // if (!actions[cid] || !actions[cid].includes(Function.mint))
+  //   throw new Error('Invalid action mint for chainId: ' + cid)
   const c = contract ? contract : DEFAULT_CONTRACT
   const res: any = await sendMessage({
     type: MessageTypes.Mint_Token,
@@ -186,8 +171,8 @@ const getOwner = async (token: NFT) => {
       token
     }
   })
-  if (res.error) throw new Error('Error to get token owner: ' + res)
-  const owner = res.result
+  // if (res.error) throw new Error('Error to get token owner: ' + res)
+  const owner = res.error ? '' : res.result
   return owner
 }
 
@@ -216,8 +201,8 @@ const getMinter = async (token: NFT) => {
       token
     }
   })
-  if (res.error) throw new Error('Error to get token minter: ' + res)
-  const minter = res.result
+  // if (res.error) throw new Error('Error to get token minter: ' + res)
+  const minter = res.error ? '' : res.result
   return minter
 }
 
@@ -239,27 +224,16 @@ async function getMinterMessageHandler(request: any) {
   return response
 }
 
-const getRole = async (token: NFT, paymentMeta?: any) => {
+export const getRole = async (
+  token: NFT,
+  paymentMeta?: any
+): Promise<{ owner?: string; minter?: string }> => {
   const chainId = token.chainId
-  if (!actions[chainId] || !actions[chainId].includes(Function.getRole))
-    throw new Error('Invalid action getRole for chainId: ' + chainId)
+  // if (!actions[chainId] || !actions[chainId].includes(Function.getRole))
+  //   throw new Error('Invalid action getRole for chainId: ' + chainId)
   const owner = await getOwner(token)
   const minter = await getMinter(token)
   return { owner, minter }
-}
-
-const init = () => {
-  const serviceName = 'platwin'
-  registerAssetService({
-    name: serviceName,
-    meta: {
-      getCapability,
-      getAssetInfo,
-      getBalance,
-      mint,
-      getRole
-    }
-  })
 }
 
 export const bgInit = () => {
@@ -280,5 +254,3 @@ export const bgInit = () => {
     handleFunc: getMinterMessageHandler
   })
 }
-
-export default init

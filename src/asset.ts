@@ -11,12 +11,15 @@ export const Function = {
   getAssetInfo: 'getAssetInfo',
   getBalance: 'getBalance',
   mint: 'mint',
-  getRole: 'getRole'
+  getRole: 'getRole',
+  getOwnedTokens: 'getOwnedTokens',
+  getCollectionList: 'getCollectionList',
+  getCollectionTokenList: 'getCollectionTokenList'
 }
 
 export type Token = {
   type: AssetType
-  chainId: number
+  chainId?: number
   contract: string
   balance?: number
 }
@@ -34,17 +37,13 @@ export type TokenCache = {
   tokenId?: string
   source?: string
 }
-export const cacheToNFT = (cache: TokenCache): NFT => {
-  const { chainId, contract, tokenId, source } = cache
-  return {
-    type: AssetType.NFT,
-    chainId,
-    contract,
-    balance: 1,
-    tokenId,
-    source
-  }
+
+export interface Collection {
+  id: string
+  name: string
+  image?: string
 }
+
 export const getAssetServices = (svcs?: string[]) => {
   if (!svcs || svcs.length === 0) return _assetServices
 
