@@ -58,7 +58,6 @@ export const mintToken = async (
     RpcRouterAbi.abi as AbiItem[],
     Contracts.RPCRouter[CHAIN_ID]
   )
-  console.log('account ', account)
   // mint
   return new Promise((resolve, reject) => {
     meme2Contract.methods
@@ -70,12 +69,11 @@ export const mintToken = async (
           transferEvt.address === Contracts.PlatwinMEME2WithoutRPC[CHAIN_ID]
         ) {
           const tokenId = transferEvt.returnValues.tokenId
-          console.log('++++++++++++++++++++', tokenId)
           resolve({ tokenId, account })
         }
       })
       .on('error', function (error: Error) {
-        console.log('MintService error:', error)
+        console.error('[asset-platwin] mintService error:', error)
         reject(error)
       })
   })
@@ -94,7 +92,7 @@ export const getOwner = async (tokenId: string) => {
     if (owner === Contracts.MarketProxyWithoutRPC[CHAIN_ID]) {
       //TODO get order with tokenId, the seller is the owner
       const order = await getOrderByTokenId(tokenId)
-      console.log('order: ', order)
+      console.debug('[asset-platwin] service getOwner of order: ', order)
       owner = order.seller
     }
     return owner
