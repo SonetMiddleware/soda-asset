@@ -27,40 +27,34 @@ export const getAssetInfo = async (
   // if (!actions[chainId] || !actions[chainId].includes(Function.getAssetInfo))
   //   throw new Error('Invalid action getAssetInfo from chainId: ' + chainId)
   const contract = c ? c : DEFAULT_CONTRACT
-  if (src) {
-    //v1
-    return {
-      type: AssetType.NFT,
-      chainId,
-      contract,
-      tokenId,
-      source: src,
-      meta: {
-        type: 'image',
-        storage: 'ipfs'
-      }
+  const token: NFT = {
+    type: AssetType.NFT,
+    chainId,
+    contract,
+    tokenId,
+    meta: {
+      type: 'image',
+      storage: 'ipfs'
     }
   }
+  if (src) {
+    //v1
+    token.source = src
+    return token
+  }
+
   const res: any = await invokeERC721({
     contract: contract,
     method: 'tokenURI',
     readOnly: true,
     args: [tokenId]
   })
-  if (res.error) throw new Error('Error fetch token info: ' + res)
-  let source = res.result
-  if (!source) return null
-  return {
-    type: AssetType.NFT,
-    chainId: chainId,
-    contract,
-    tokenId,
-    source,
-    meta: {
-      type: 'image',
-      storage: 'ipfs'
-    }
+  if (res.error) {
+    // throw new Error('Error fetch token info: ' + res)
+  } else {
+    token.source = res.result
   }
+  return token
 }
 
 export const getBalance = async (meta: {
@@ -92,7 +86,7 @@ const invokeERC721 = async (request: any) => {
     return res
   } catch (e) {
     console.error(e)
-    response.error = e
+    response.error = (e as any).message || e
   }
   return response
 }
@@ -108,7 +102,7 @@ async function ERC721MessageHandler(request: any) {
     response.result = res
   } catch (e) {
     console.error(e)
-    response.error = e
+    response.error = (e as any).message || e
   }
   return response
 }
@@ -159,7 +153,7 @@ async function mintTokenMessageHandler(request: any) {
     }
   } catch (e) {
     console.error(e)
-    response.error = e
+    response.error = (e as any).message || e
   }
   return response
 }
@@ -189,7 +183,7 @@ async function getOwnerMessageHandler(request: any) {
     response.result = owner
   } catch (e) {
     console.error(e)
-    response.error = e
+    response.error = (e as any).message || e
   }
   return response
 }
@@ -219,7 +213,7 @@ async function getMinterMessageHandler(request: any) {
     response.result = minter
   } catch (e) {
     console.error(e)
-    response.error = e
+    response.error = (e as any).message || e
   }
   return response
 }

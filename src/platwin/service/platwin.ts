@@ -14,29 +14,29 @@ export const invokeERC721 = async (
   readOnly: boolean,
   args: any[]
 ) => {
-  try {
-    const web3 = createWeb3()
-    const erc721 = new web3.eth.Contract(ERC721abi.abi as AbiItem[], contract)
-    if (readOnly) {
-      const res = await erc721.methods[method](...args).call()
-      return res
-    } else {
-      const account = await getUserAccount()
-      return new Promise((resolve, reject) => {
-        erc721.methods[method](...args)
-          .send({ from: account })
-          .on('receipt', function (receipt: any) {
-            resolve(receipt)
-          })
-          .on('error', function (error: Error) {
-            reject(error)
-          })
-      })
-    }
-  } catch (e) {
-    console.error(e)
-    return e
+  // try {
+  const web3 = createWeb3()
+  const erc721 = new web3.eth.Contract(ERC721abi.abi as AbiItem[], contract)
+  if (readOnly) {
+    const res = await erc721.methods[method](...args).call()
+    return res
+  } else {
+    const account = await getUserAccount()
+    return new Promise((resolve, reject) => {
+      erc721.methods[method](...args)
+        .send({ from: account })
+        .on('receipt', function (receipt: any) {
+          resolve(receipt)
+        })
+        .on('error', function (error: Error) {
+          reject(error)
+        })
+    })
   }
+  // } catch (e) {
+  //   console.error(e)
+  //   return e
+  // }
 }
 
 export const mintToken = async (
