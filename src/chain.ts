@@ -1,26 +1,34 @@
 import { registerChain } from './asset'
-import { httpRequest } from '@soda/soda-util'
+import { httpRequest, invokeWeb3Api } from '@soda/soda-util'
 
 const estimateBlockByTime = async (
   timeMilliseconds: number[],
-  scanHost: string
+  scanHost: string,
+  apikey?: string
 ) => {
+  const blockRes: any = await invokeWeb3Api({
+    module: 'eth',
+    method: 'getBlockNumber'
+  })
+  const { result: currentBlockHeight } = blockRes
   let now = Math.floor(Date.now() / 1000)
-  const url1 = `https://${scanHost}/api?module=block&action=getblocknobytime&timestamp=${now}&closest=before`
-  const res1 = await httpRequest({ url: url1 })
-  const block = Number(res1.result)
-  const url2 = `https://${scanHost}/api?module=block&action=getblockcountdown&blockno=${
-    block + 100
-  }`
-  const res2 = await httpRequest({ url: url2 })
+  const url = `https://${scanHost}/api`
+  const params = {
+    module: 'block',
+    action: 'getblockcountdown',
+    blockno: currentBlockHeight + 100,
+    apikey
+  }
+  const resp = await httpRequest({ url, params })
   const timePerBlock =
-    Number(res2.result.EstimateTimeInSec) / Number(res2.result.RemainingBlock)
+    Number(resp.result.EstimateTimeInSec) / Number(resp.result.RemainingBlock)
 
   const res = []
   for (const time of timeMilliseconds) {
     // FIXME: shall call api to get direct block height in the past
     const estBlock =
-      block + Math.ceil((Math.floor(time / 1000) - now) / timePerBlock)
+      currentBlockHeight +
+      Math.ceil((Math.floor(time / 1000) - now) / timePerBlock)
     res.push[estBlock]
   }
   return res
@@ -36,7 +44,11 @@ const init = () => {
       explorer: 'https://etherscan.io',
       api: {
         estimateBlockByTime: async (params: { timeMilliseconds: number[] }) => {
-          estimateBlockByTime(params.timeMilliseconds, 'api.etherscan.io')
+          estimateBlockByTime(
+            params.timeMilliseconds,
+            'api.etherscan.io',
+            'XQC3E447KF4EHSXC1IMC2M6IN4B947JA4I'
+          )
         }
       }
     }
@@ -59,12 +71,30 @@ const init = () => {
     }
   })
   registerChain({
+    name: 'polygon',
+    meta: {
+      chainId: 137,
+      rpc: 'https://polygon-rpc.com',
+      symbol: 'MATIC',
+      explorer: 'https://polygonscan.com/',
+      api: {
+        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) => {
+          estimateBlockByTime(
+            params.timeMilliseconds,
+            'api-testnet.polygonscan.com',
+            '588TW5DBXGV5DXNR1S4YXK1RV6F88SWYPS'
+          )
+        }
+      }
+    }
+  })
+  registerChain({
     name: 'polygon-mumbai',
     meta: {
       chainId: 80001,
       rpc: 'https://rpc-mumbai.matic.today',
       symbol: 'MATIC',
-      explorer: 'https://polygonscan.com/',
+      explorer: 'https://mumbai.polygonscan.com/',
       api: {
         estimateBlockByTime: async (params: { timeMilliseconds: number[] }) => {
           estimateBlockByTime(
