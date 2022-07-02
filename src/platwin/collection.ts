@@ -1,6 +1,7 @@
 import { NFT } from '@/asset'
 import { Collection } from '..'
 import * as Api from './service/apis'
+import { getChainId } from '@soda/soda-util'
 
 export const getCollectionList = async (params: {
   address: string
@@ -54,8 +55,9 @@ export const getCollectionTokenList = async (params: {
     },
     data: []
   }
+  const chainId = await getChainId()
   for (const t of nfts.data) {
-    res.data.push(Api.toToken(t))
+    res.data.push(Api.toToken(t, chainId))
   }
   return res
 }

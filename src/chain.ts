@@ -29,7 +29,7 @@ const estimateBlockByTime = async (
     const estBlock =
       currentBlockHeight +
       Math.ceil((Math.floor(time / 1000) - now) / timePerBlock)
-    res.push[estBlock]
+    res.push(estBlock)
   }
   return res
 }
@@ -43,13 +43,12 @@ const init = () => {
       symbol: 'ETH',
       explorer: 'https://etherscan.io',
       api: {
-        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) => {
+        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) =>
           estimateBlockByTime(
             params.timeMilliseconds,
             'api.etherscan.io',
             'XQC3E447KF4EHSXC1IMC2M6IN4B947JA4I'
           )
-        }
       }
     }
   })
@@ -61,12 +60,11 @@ const init = () => {
       symbol: 'ETH',
       explorer: 'https://rinkeby.etherscan.io',
       api: {
-        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) => {
+        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) =>
           estimateBlockByTime(
             params.timeMilliseconds,
             'api-rinkeby.etherscan.io'
           )
-        }
       }
     }
   })
@@ -78,13 +76,12 @@ const init = () => {
       symbol: 'MATIC',
       explorer: 'https://polygonscan.com/',
       api: {
-        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) => {
+        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) =>
           estimateBlockByTime(
             params.timeMilliseconds,
             'api-testnet.polygonscan.com',
             '588TW5DBXGV5DXNR1S4YXK1RV6F88SWYPS'
           )
-        }
       }
     }
   })
@@ -96,12 +93,11 @@ const init = () => {
       symbol: 'MATIC',
       explorer: 'https://mumbai.polygonscan.com/',
       api: {
-        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) => {
+        estimateBlockByTime: async (params: { timeMilliseconds: number[] }) =>
           estimateBlockByTime(
             params.timeMilliseconds,
             'api-testnet.polygonscan.com'
           )
-        }
       }
     }
   })

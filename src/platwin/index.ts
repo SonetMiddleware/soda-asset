@@ -23,6 +23,14 @@ const actions = {
     Function.getCollectionList,
     Function.getCollectionTokenList
   ],
+  137: [
+    Function.getAssetInfo,
+    Function.getBalance,
+    Function.getRole,
+    Function.getOwnedTokens,
+    Function.getCollectionList,
+    Function.getCollectionTokenList
+  ],
   80001: [
     Function.getAssetInfo,
     Function.getBalance,
