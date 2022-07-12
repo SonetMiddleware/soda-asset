@@ -47,6 +47,7 @@ export const toToken = (t: IOwnedNFTData, chainId?: number): NFT => {
   return {
     type: t.erc == '1155' ? AssetType.PFT : AssetType.NFT,
     balance: t.amount,
+    // FIXME: shall return chainId
     chainId: chainId ? chainId : DEFAULT_CHAINID,
     contract: t.contract,
     tokenId: t.token_id,

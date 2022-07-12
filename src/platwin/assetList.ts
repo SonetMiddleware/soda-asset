@@ -28,7 +28,7 @@ export const getOwnedTokens = async (params: {
   const res = { total: tokens.total, data: [] }
 
   for (const t of tokens.data) {
-    res.data.push(Api.toToken(t, cid))
+    res.data.push(Api.toToken(t, chainId))
   }
   return res
 }
