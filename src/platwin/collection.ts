@@ -10,7 +10,7 @@ export const getCollectionList = async (params: {
 }): Promise<{ total: number; data: Collection[] }> => {
   const { address, offset, limit } = params
   let page: number
-  if (offset && limit && limit > 0) page = Math.floor(offset / limit)
+  if (offset && limit && limit > 0) page = Math.floor(offset / limit) + 1
   const collections = await Api.getCollectionList({
     addr: address,
     page,
@@ -39,7 +39,7 @@ export const getCollectionTokenList = async (params: {
 }> => {
   const { collectionId, address, offset, limit } = params
   let page: number
-  if (offset && limit && limit > 0) page = Math.floor(offset / limit)
+  if (offset && limit && limit > 0) page = Math.floor(offset / limit) + 1
   const nfts = await Api.getCollectionNFTList({
     collection_id: collectionId,
     addr: address,
