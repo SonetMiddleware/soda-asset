@@ -101,6 +101,7 @@ async function ERC721MessageHandler(request: any) {
     const res = await Platwin.invokeERC721(contract, method, readOnly, args)
     response.result = res
   } catch (e) {
+    console.log('[ERC721MessageHandler] ', request)
     console.error(e)
     response.error = (e as any).message || e
   }

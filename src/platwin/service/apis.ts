@@ -1,6 +1,10 @@
 import { AssetType, NFT } from '@/asset'
-import { getChainId, httpRequest } from '@soda/soda-util'
-
+import {
+  getChainId,
+  httpRequest,
+  API_HOST,
+  getChainName
+} from '@soda/soda-util'
 // hard code for now
 const HOST_MAP: Record<number, string> = {
   80001: 'https://testapi2.platwin.io:49336/api/v1',
@@ -22,8 +26,9 @@ const getHost = async (meta?: NFT | number): Promise<string> => {
 }
 export const getOrderByTokenId = async (tokenId: string, status?: number) => {
   // nash market hook, backward compatible
-  const url = `${await getHost(80001)}/orders`
-  const params = { token_id: tokenId, status }
+  const url = `${API_HOST}/orders`
+  const chain_name = await getChainName()
+  const params = { token_id: tokenId, status, chain_name }
   try {
     const res = await httpRequest({ url, params })
     if (res.error) {
@@ -63,6 +68,7 @@ export interface IGetOwnedNFTParams {
   token_id?: string
   page?: number
   gap?: number
+  chain_name?: string
 }
 export interface IOwnedNFTData {
   // collection_id: ''; // collection id
@@ -88,7 +94,9 @@ export const getOwnedNFT = async (
       data: []
     }
   }
-  const url = `${await getHost()}/nfts`
+  const url = `${API_HOST}/nfts`
+  const chain_name = await getChainName()
+  params.chain_name = chain_name
   const res = await httpRequest({ url, params })
   console.debug('[asset-platwin] getOwnedNFT: ', params, res)
   // FIXME: handle error
@@ -100,6 +108,7 @@ export interface IGetCollectionListParams {
   addr: string
   page?: number
   gap?: number
+  chain_name?: string
 }
 export interface ICollectionItem {
   id: string
@@ -114,7 +123,9 @@ export interface IGetCollectionListResult {
 export const getCollectionList = async (
   params: IGetCollectionListParams
 ): Promise<IGetCollectionListResult> => {
-  const url = `${await getHost()}/collection-list`
+  const url = `${API_HOST}/collection-list`
+  const chain_name = await getChainName()
+  params.chain_name = chain_name
   const res = await httpRequest({ url, params })
   console.debug('[asset-platwin] getCollectionList: ', params, res)
   // FIXME: handle error
@@ -127,6 +138,7 @@ export interface IGetCollectionNFTListParams {
   addr?: string
   page?: number
   gap?: number
+  chain_name?: string
 }
 export interface IGetCollectionNFTListResult {
   total: number
@@ -138,7 +150,9 @@ export interface IGetCollectionNFTListResult {
 export const getCollectionNFTList = async (
   params: IGetCollectionNFTListParams
 ): Promise<IGetCollectionNFTListResult> => {
-  const url = `${await getHost()}/collection/nfts`
+  const url = `${API_HOST}/collection/nfts`
+  const chain_name = await getChainName()
+  params.chain_name = chain_name
   const res = await httpRequest({ url, params })
   console.debug('[asset-platwin] getCollectionNFTList: ', params, res)
   // FIXME: handle error
