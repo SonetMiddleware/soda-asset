@@ -6,24 +6,7 @@ import {
   getChainName
 } from '@soda/soda-util'
 // hard code for now
-const HOST_MAP: Record<number, string> = {
-  80001: 'https://testapi2.platwin.io:49336/api/v1',
-  4: 'https://testapi3.platwin.io:59336/api/v1',
-  1: 'https://api.platwin.io:8081/api/v1',
-  137: 'https://matic-api.platwin.io:8082/api/v1'
-}
-const getHost = async (meta?: NFT | number): Promise<string> => {
-  let chainId = 0
-  if (meta) {
-    if (typeof meta == 'number') chainId = meta
-    else chainId = (meta as NFT).chainId
-  } else chainId = await getChainId()
-  if (!HOST_MAP[chainId])
-    throw new Error(
-      '[asset-platwin] getHost error, unsupported chainId: ' + chainId
-    )
-  return HOST_MAP[chainId]
-}
+
 export const getOrderByTokenId = async (tokenId: string, status?: number) => {
   // nash market hook, backward compatible
   const url = `${API_HOST}/orders`
