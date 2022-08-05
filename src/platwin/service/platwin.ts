@@ -7,6 +7,7 @@ import ERC721abi from './config/abis/ERC721.json'
 import { AbiItem } from 'web3-utils'
 import { getOrderByTokenId } from './apis'
 import { serviceRequestAccounts } from '@soda/soda-util'
+import { NFT } from '@/asset'
 
 export const invokeERC721 = async (
   contract: string,
@@ -79,19 +80,20 @@ export const mintToken = async (
   })
 }
 
-export const getOwner = async (tokenId: string) => {
+export const getOwner = async (token: NFT) => {
   try {
     const web3 = createWeb3()
     const CHAIN_ID = await web3.eth.getChainId()
+    const chainId = token.chainId || CHAIN_ID
     const meme2Contract = new web3.eth.Contract(
       Meme2Abi.abi as AbiItem[],
-      Contracts.PlatwinMEME2WithoutRPC[CHAIN_ID]
+      token.contract || Contracts.PlatwinMEME2WithoutRPC[CHAIN_ID]
     )
-    let owner = await meme2Contract.methods.ownerOf(tokenId).call()
+    let owner = await meme2Contract.methods.ownerOf(token.tokenId).call()
     // on market
     if (owner === Contracts.MarketProxyWithoutRPC[CHAIN_ID]) {
       //TODO get order with tokenId, the seller is the owner
-      const order = await getOrderByTokenId(tokenId)
+      const order = await getOrderByTokenId(token.tokenId)
       console.debug('[asset-platwin] service getOwner of order: ', order)
       owner = order.seller
     }
@@ -102,15 +104,16 @@ export const getOwner = async (tokenId: string) => {
   }
 }
 
-export const getMinter = async (tokenId: string) => {
+export const getMinter = async (token: NFT) => {
   try {
     const web3 = createWeb3()
     const CHAIN_ID = await web3.eth.getChainId()
+    const chainId = token.chainId || CHAIN_ID
     const meme2Contract = new web3.eth.Contract(
       Meme2Abi.abi as AbiItem[],
-      Contracts.PlatwinMEME2WithoutRPC[CHAIN_ID]
+      token.contract || Contracts.PlatwinMEME2WithoutRPC[CHAIN_ID]
     )
-    const minter = await meme2Contract.methods.minter(tokenId).call()
+    const minter = await meme2Contract.methods.minter(token.tokenId).call()
     return minter
   } catch (e) {
     console.error(e)

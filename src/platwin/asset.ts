@@ -180,7 +180,7 @@ async function getOwnerMessageHandler(request: any) {
   try {
     const { token } = request
     // TODO: apply to fit for chains and contracts
-    const owner = await Platwin.getOwner(token.tokenId)
+    const owner = await Platwin.getOwner(token)
     response.result = owner
   } catch (e) {
     console.error(e)
@@ -210,7 +210,7 @@ async function getMinterMessageHandler(request: any) {
   try {
     const { token } = request
     // TODO: apply to fit for chains and contracts
-    const minter = await Platwin.getMinter(token.tokenId)
+    const minter = await Platwin.getMinter(token)
     response.result = minter
   } catch (e) {
     console.error(e)
