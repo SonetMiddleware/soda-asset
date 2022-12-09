@@ -23,7 +23,7 @@ export const getAssetInfo = async (
 ): Promise<NFT> => {
   const { chainId: cid, contract: c, tokenId, source: src } = meta
   // hard code
-  const chainId = cid ? Number(cid) : Number(DEFAULT_CHAINID)
+  const chainId = cid || Number(DEFAULT_CHAINID)
   // if (!actions[chainId] || !actions[chainId].includes(Function.getAssetInfo))
   //   throw new Error('Invalid action getAssetInfo from chainId: ' + chainId)
   const contract = c ? c : DEFAULT_CONTRACT

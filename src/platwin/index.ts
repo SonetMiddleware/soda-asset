@@ -39,6 +39,24 @@ const actions = {
     Function.getOwnedTokens,
     Function.getCollectionList,
     Function.getCollectionTokenList
+  ],
+  flowmain: [
+    Function.getAssetInfo,
+    Function.getBalance,
+    Function.mint,
+    Function.getRole,
+    Function.getOwnedTokens,
+    Function.getCollectionList,
+    Function.getCollectionTokenList
+  ],
+  flowtest: [
+    Function.getAssetInfo,
+    Function.getBalance,
+    Function.mint,
+    Function.getRole,
+    Function.getOwnedTokens,
+    Function.getCollectionList,
+    Function.getCollectionTokenList
   ]
 }
 

@@ -19,6 +19,7 @@ const estimateBlockByTime = async (
     blockno: currentBlockHeight + 100,
     apikey
   }
+  console.log('estimateBlockByTime : ', currentBlockHeight, timeMilliseconds)
   const resp = await httpRequest({ url, params })
   const timePerBlock =
     Number(resp.result.EstimateTimeInSec) / Number(resp.result.RemainingBlock)
@@ -28,7 +29,8 @@ const estimateBlockByTime = async (
     // FIXME: shall call api to get direct block height in the past
     const estBlock =
       currentBlockHeight +
-      Math.ceil((Math.floor(time / 1000) - now) / timePerBlock)
+      Math.ceil((Math.floor(time / 1000) - now) / timePerBlock) +
+      200
     res.push(estBlock)
   }
   return res
