@@ -79,10 +79,11 @@ export const getBalance = async (meta: {
 const invokeERC721 = async (request: any) => {
   const response: any = {}
   try {
-    const res: any = await sendMessage({
-      type: MessageTypes.InvokeERC721Contract,
-      request
-    })
+    // const res: any = await sendMessage({
+    //   type: MessageTypes.InvokeERC721Contract,
+    //   request
+    // })
+    const res: any = await ERC721MessageHandler(request)
     return res
   } catch (e) {
     console.error(e)
@@ -117,13 +118,18 @@ export const mint = async (
   // if (!actions[cid] || !actions[cid].includes(Function.mint))
   //   throw new Error('Invalid action mint for chainId: ' + cid)
   const c = contract ? contract : DEFAULT_CONTRACT
-  const res: any = await sendMessage({
-    type: MessageTypes.Mint_Token,
-    request: {
-      chainId: cid,
-      contract: c,
-      hash: source
-    }
+  // const res: any = await sendMessage({
+  //   type: MessageTypes.Mint_Token,
+  //   request: {
+  //     chainId: cid,
+  //     contract: c,
+  //     hash: source
+  //   }
+  // })
+  const res: any = await mintTokenMessageHandler({
+    chainId: cid,
+    contract: c,
+    hash: source
   })
   if (res.error) throw new Error('Error to mint token: ' + res)
   return res.result
@@ -160,12 +166,13 @@ async function mintTokenMessageHandler(request: any) {
 }
 
 const getOwner = async (token: NFT) => {
-  const res: any = await sendMessage({
-    type: MessageTypes.Get_Owner,
-    request: {
-      token
-    }
-  })
+  // const res: any = await sendMessage({
+  //   type: MessageTypes.Get_Owner,
+  //   request: {
+  //     token
+  //   }
+  // })
+  const res: any = await getOwnerMessageHandler({ token })
   // if (res.error) throw new Error('Error to get token owner: ' + res)
   const owner = res.error ? '' : res.result
   return owner
@@ -190,12 +197,13 @@ async function getOwnerMessageHandler(request: any) {
 }
 
 const getMinter = async (token: NFT) => {
-  const res: any = await sendMessage({
-    type: MessageTypes.Get_Minter,
-    request: {
-      token
-    }
-  })
+  // const res: any = await sendMessage({
+  //   type: MessageTypes.Get_Minter,
+  //   request: {
+  //     token
+  //   }
+  // })
+  const res:any = await getMinterMessageHandler({ token })
   // if (res.error) throw new Error('Error to get token minter: ' + res)
   const minter = res.error ? '' : res.result
   return minter
